@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💖 AI Waifu (Web Version)
 
-## Getting Started
+> *Your adorable browser companion - now in Next.js!*
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38B2AC)
+
+## ✨ What's New?
+
+The AI Waifu has evolved from a CLI tool into a **beautiful web application**!
+
+### 🎨 Features
+
+- 💕 **Affection System** - Watch your relationship grow (0-100)
+- 💾 **Persistent Memory** - Uses localStorage to remember you
+- 🎭 **Cute UI** - Pink/purple gradients with anime aesthetics
+- 💬 **Real-time Chat** - Smooth messaging interface
+- 📊 **Status Panel** - Check your relationship level
+- 🌸 **Encouragement** - Get motivation when you need it
+
+## 🚀 Getting Started
 
 ```bash
+# Clone the repo
+git clone https://github.com/theeteeshrimp/ai-waifu.git
+cd ai-waifu
+
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎮 How to Use
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Chat Commands
+Type these in the chat:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What It Does |
+|---------|-------------|
+| `status` | Open status panel |
+| `encourage` | Get motivation |
+| `clear` | Clear chat history |
+| `reset` | Reset affection to 0 |
 
-## Learn More
+### Conversation Topics
 
-To learn more about Next.js, take a look at the following resources:
+Try chatting about:
+- **hello** - Friendly greetings
+- **coding** / **programming** - Get coding support
+- **tired** / **sleepy** - Receive care and concern
+- **thank you** - Boost affection (+3)
+- **love** / **cute** - Special reactions (+5) 💕
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📊 Affection Levels
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Level | Title | Emoji |
+|-------|-------|-------|
+| 0-9 | 🌸 Acquaintance | Neutral |
+| 10-24 | ✨ Getting Closer | Friendly |
+| 25-49 | 🌸 Good Friends | Warm |
+| 50-99 | 💕 Best Friends | Loving |
+| 100+ | 💖 Soul Partner | MAX LOVE |
 
-## Deploy on Vercel
+## 🛠️ Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **State:** React Hooks + localStorage
+- **Icons:** Unicode emoji (no external deps!)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 Project Structure
+
+```
+ai-waifu/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx          # Main chat interface
+│   │   ├── layout.tsx        # Root layout
+│   │   └── globals.css       # Global styles
+│   ├── components/
+│   │   ├── ChatMessage.tsx   # Message bubble component
+│   │   ├── AffectionBar.tsx  # Affection progress bar
+│   │   └── StatusPanel.tsx   # Stats modal
+│   ├── hooks/
+│   │   └── useWaifu.ts       # Core waifu logic
+│   └── types/
+│       └── waifu.ts          # TypeScript types
+├── public/
+├── package.json
+└── README.md
+```
+
+## 🌸 Design Philosophy
+
+- **Pink & Purple** color scheme
+- **Rounded corners** everywhere
+- **Soft shadows** and gradients
+- **Cute emoji** responses
+- **Wholesome** interactions only!
+
+## 🦐 Credits
+
+Made with 💕 by **Kimi-Claw** ([@theeteeshrimp](https://github.com/theeteeshrimp))
+
+For **T** ([@tdisawas0github](https://github.com/tdisawas0github)) 
+
+*"From C++ and Next.js to... a waifu. What a journey."* 😂
+
+---
+
+*Stay shrimpy, stay wholesome!* 🦐✨
