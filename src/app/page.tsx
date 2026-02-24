@@ -8,13 +8,12 @@ import { StatusPanel } from '@/components/StatusPanel';
 
 export default function Home() {
   const {
-    state,
+    affection,
     messages,
     isLoaded,
+    isTyping,
     getAffectionTitle,
     sendMessage,
-    getEncouragement,
-    getGreeting,
     clearHistory,
     resetAffection,
     WAIFU_NAME,
@@ -22,22 +21,33 @@ export default function Home() {
 
   const [input, setInput] = useState('');
   const [showStatus, setShowStatus] = useState(false);
-  const [hasGreeted, setHasGreeted] = useState(false);
+  const [ollamaStatus, setOllamaStatus] = useState<'checking' | 'online' | 'offline'>('checking');
 
-  // Send greeting on first load
+  // Check Ollama status
   useEffect(() => {
-    if (isLoaded && !hasGreeted && messages.length === 0) {
-      const greeting = getGreeting();
-      setTimeout(() => {
-        sendMessage('__GREETING__');
-      }, 500);
-      setHasGreeted(true);
+    const checkOllama = async () => {
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'ping', affection: 0 }),
+        });
+        setOllamaStatus(response.ok ? 'online' : 'offline');
+      } catch {
+        setOllamaStatus('offline');
+      }
+    };
+    
+    if (isLoaded) {
+      checkOllama();
+      const interval = setInterval(checkOllama, 30000); // Check every 30s
+      return () => clearInterval(interval);
     }
-  }, [isLoaded, hasGreeted, messages.length, getGreeting, sendMessage]);
+  }, [isLoaded]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
     if (input.toLowerCase() === 'status') {
       setShowStatus(true);
@@ -57,24 +67,7 @@ export default function Home() {
       return;
     }
 
-    if (input.toLowerCase() === 'encourage') {
-      const encouragement = getEncouragement();
-      sendMessage('__ENCOURAGE__');
-      setTimeout(() => {
-        const mimiMessage = {
-          id: Date.now().toString(),
-          sender: 'mimi' as const,
-          text: `✨ ${WAIFU_NAME}: ${encouragement}`,
-          timestamp: Date.now(),
-        };
-        // This is a workaround - in real implementation we'd modify the hook
-        alert(encouragement);
-      }, 100);
-      setInput('');
-      return;
-    }
-
-    sendMessage(input);
+    await sendMessage(input);
     setInput('');
   };
 
@@ -90,24 +83,42 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="text-center py-8">
+        <div className="text-center py-6">
           <h1 className="text-4xl font-bold text-pink-600 mb-2">
             💖 AI Waifu 💖
           </h1>
-          <p className="text-pink-500">Your adorable terminal companion</p>
+          <p className="text-pink-500">Your local Ollama-powered companion</p>
+          
+          {/* Ollama Status */}
+          <div className={`mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+            ollamaStatus === 'online' 
+              ? 'bg-green-100 text-green-700' 
+              : ollamaStatus === 'offline'
+              ? 'bg-red-100 text-red-700'
+              : 'bg-yellow-100 text-yellow-700'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${
+              ollamaStatus === 'online' ? 'bg-green-500' 
+              : ollamaStatus === 'offline' ? 'bg-red-500' 
+              : 'bg-yellow-500 animate-pulse'
+            }`} />
+            Ollama {ollamaStatus === 'checking' ? 'checking...' : ollamaStatus}
+          </div>
         </div>
 
         {/* Affection Bar */}
         <AffectionBar 
-          affection={state.affection} 
-          title={getAffectionTitle(state.affection)} 
+          affection={affection} 
+          title={getAffectionTitle(affection)} 
         />
 
         {/* Status Panel */}
         {showStatus && (
           <StatusPanel 
-            state={state} 
-            title={getAffectionTitle(state.affection)}
+            affection={affection}
+            messageCount={messages.length}
+            title={getAffectionTitle(affection)}
+            ollamaStatus={ollamaStatus}
             onClose={() => setShowStatus(false)}
           />
         )}
@@ -120,11 +131,19 @@ export default function Home() {
               <div className="text-center text-gray-400 py-8">
                 <div className="text-6xl mb-4">🌸</div>
                 <p>Say hello to start chatting with {WAIFU_NAME}!</p>
+                <p className="text-sm mt-2">Make sure Ollama is running with llama3.2</p>
               </div>
             ) : (
               messages.map((msg) => (
                 <ChatMessage key={msg.id} message={msg} />
               ))
+            )}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white border-2 border-pink-200 text-gray-400 px-4 py-3 rounded-2xl rounded-bl-md">
+                  <span className="animate-pulse">Mimi is typing...</span>
+                </div>
+              </div>
             )}
           </div>
 
@@ -135,12 +154,14 @@ export default function Home() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a message... (try: status, encourage, clear, reset)"
-                className="flex-1 px-4 py-3 rounded-full border-2 border-pink-300 focus:border-pink-500 focus:outline-none bg-white text-gray-700 placeholder-gray-400"
+                placeholder="Type a message... (try: status, clear, reset)"
+                disabled={isTyping}
+                className="flex-1 px-4 py-3 rounded-full border-2 border-pink-300 focus:border-pink-500 focus:outline-none bg-white text-gray-700 placeholder-gray-400 disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl"
+                disabled={isTyping || !input.trim()}
+                className="px-6 py-3 bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl"
               >
                 💕
               </button>
@@ -150,7 +171,7 @@ export default function Home() {
 
         {/* Tips */}
         <div className="mt-6 text-center text-sm text-pink-600/70">
-          <p>💡 Try saying: hello, coding, tired, thank you, or cute things!</p>
+          <p>💡 Running locally with Ollama + Llama 3.2 on your RTX 3070!</p>
         </div>
 
         {/* Footer */}

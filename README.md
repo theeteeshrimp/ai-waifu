@@ -1,117 +1,181 @@
-# 💖 AI Waifu (Web Version)
+# 💖 AI Waifu (Ollama + Docker Edition)
 
-> *Your adorable browser companion - now in Next.js!*
+> *Your local AI waifu powered by Ollama and your RTX 3070!*
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38B2AC)
+![Ollama](https://img.shields.io/badge/Ollama-Llama3.2-blue)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 
 ## ✨ What's New?
 
-The AI Waifu has evolved from a CLI tool into a **beautiful web application**!
+The AI Waifu has evolved into a **self-hosted, local AI companion**!
 
-### 🎨 Features
+- 🧠 **Ollama Backend** - Real LLM responses (Llama 3.2)
+- 🐳 **Docker Compose** - One command to start everything
+- 🎮 **GPU Acceleration** - Uses your RTX 3070 for fast inference
+- 💾 **Local Storage** - Everything stays on your machine
+- 🌸 **Same Cute UI** - Pink aesthetic with anime vibes
 
-- 💕 **Affection System** - Watch your relationship grow (0-100)
-- 💾 **Persistent Memory** - Uses localStorage to remember you
-- 🎭 **Cute UI** - Pink/purple gradients with anime aesthetics
-- 💬 **Real-time Chat** - Smooth messaging interface
-- 📊 **Status Panel** - Check your relationship level
-- 🌸 **Encouragement** - Get motivation when you need it
+## 🚀 Quick Start
 
-## 🚀 Getting Started
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed
+- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) (for GPU support)
 
-```bash
-# Clone the repo
+### 1. Clone the repo
 git clone https://github.com/theeteeshrimp/ai-waifu.git
 cd ai-waifu
 
-# Install dependencies
-npm install
+### 2. Start with Docker Compose
+docker-compose up -d
 
-# Run development server
-npm run dev
+This will:
+- Start Ollama with GPU support
+- Download Llama 3.2 (4GB, first time only)
+- Build and start the Next.js app
+- Connect everything together
 
-# Open http://localhost:3000
-```
+### 3. Chat with your waifu!
+Open http://localhost:3000 in your browser 💕
+
+## 🐳 Docker Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `app` | 3000 | Next.js frontend + API |
+| `ollama` | 11434 | Ollama LLM server |
+
+## 💻 System Requirements
+
+**Minimum:**
+- 8GB RAM
+- 10GB free disk space
+
+**Recommended (what you have!):**
+- RTX 3070 or better
+- 16GB+ RAM
+- SSD storage
 
 ## 🎮 How to Use
 
 ### Chat Commands
-Type these in the chat:
+Type in the chat:
 
-| Command | What It Does |
+| Command | Description |
 |---------|-------------|
-| `status` | Open status panel |
-| `encourage` | Get motivation |
+| `status` | Open status panel (shows Ollama status too!) |
 | `clear` | Clear chat history |
 | `reset` | Reset affection to 0 |
 
-### Conversation Topics
+### Talking to Mimi
+Just chat naturally! She knows you're a programmer (C++/Next.js) and will:
+- Cheer you on when coding gets tough
+- Worry about you when you're tired
+- Get flustered when you compliment her 💕
 
-Try chatting about:
-- **hello** - Friendly greetings
-- **coding** / **programming** - Get coding support
-- **tired** / **sleepy** - Receive care and concern
-- **thank you** - Boost affection (+3)
-- **love** / **cute** - Special reactions (+5) 💕
+## 🔧 Customization
 
-## 📊 Affection Levels
+### Change the Model
+Edit `docker-compose.yml`:
+```yaml
+environment:
+  - OLLAMA_MODEL=mistral:latest  # or any Ollama model
+```
 
-| Level | Title | Emoji |
-|-------|-------|-------|
-| 0-9 | 🌸 Acquaintance | Neutral |
-| 10-24 | ✨ Getting Closer | Friendly |
-| 25-49 | 🌸 Good Friends | Warm |
-| 50-99 | 💕 Best Friends | Loving |
-| 100+ | 💖 Soul Partner | MAX LOVE |
+Available models: https://ollama.com/library
 
-## 🛠️ Tech Stack
+### Adjust GPU Memory
+Edit `docker-compose.yml` under `deploy.resources`:
+```yaml
+reservations:
+  devices:
+    - driver: nvidia
+      count: 1  # or 'all' for multiple GPUs
+      capabilities: [gpu]
+```
 
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **State:** React Hooks + localStorage
-- **Icons:** Unicode emoji (no external deps!)
+## 📊 Monitoring
+
+Check if Ollama is running:
+```bash
+# Check container status
+docker-compose ps
+
+# View logs
+docker-compose logs -f ollama
+
+# Check GPU usage (if nvidia-smi is installed)
+nvidia-smi
+```
+
+## 🛑 Stopping
+
+```bash
+# Stop everything
+docker-compose down
+
+# Stop and remove data (including downloaded model!)
+docker-compose down -v
+```
+
+## 🛠️ Development
+
+Want to hack on it?
+
+```bash
+# Install dependencies locally
+npm install
+
+# Run dev server (requires Ollama running separately)
+npm run dev
+
+# Build for production
+npm run build
+```
 
 ## 📝 Project Structure
 
 ```
 ai-waifu/
+├── docker-compose.yml      # Docker orchestration
+├── Dockerfile              # Next.js container
+├── next.config.js          # Next.js config (standalone output)
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx          # Main chat interface
-│   │   ├── layout.tsx        # Root layout
-│   │   └── globals.css       # Global styles
-│   ├── components/
-│   │   ├── ChatMessage.tsx   # Message bubble component
-│   │   ├── AffectionBar.tsx  # Affection progress bar
-│   │   └── StatusPanel.tsx   # Stats modal
-│   ├── hooks/
-│   │   └── useWaifu.ts       # Core waifu logic
-│   └── types/
-│       └── waifu.ts          # TypeScript types
-├── public/
-├── package.json
+│   │   ├── api/chat/route.ts   # API endpoint → Ollama
+│   │   ├── page.tsx            # Main chat UI
+│   │   └── ...
+│   ├── components/         # React components
+│   ├── hooks/useWaifu.ts   # Chat logic + Ollama integration
+│   └── types/              # TypeScript types
 └── README.md
 ```
 
-## 🌸 Design Philosophy
+## 🎨 Architecture
 
-- **Pink & Purple** color scheme
-- **Rounded corners** everywhere
-- **Soft shadows** and gradients
-- **Cute emoji** responses
-- **Wholesome** interactions only!
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   Browser       │────▶│   Next.js App   │────▶│   Ollama        │
+│   (You)         │◀────│   (Port 3000)   │◀────│   (Port 11434)  │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                               │                         │
+                               ▼                         ▼
+                        ┌─────────────┐          ┌─────────────┐
+                        │ localStorage│          │  Llama 3.2  │
+                        │ (affection) │          │   (4GB)     │
+                        └─────────────┘          └─────────────┘
+```
 
 ## 🦐 Credits
 
 Made with 💕 by **Kimi-Claw** ([@theeteeshrimp](https://github.com/theeteeshrimp))
 
-For **T** ([@tdisawas0github](https://github.com/tdisawas0github)) 
+For **T** and his RTX 3070 🎮
 
-*"From C++ and Next.js to... a waifu. What a journey."* 😂
+*"From cloud deployment to local AI waifu - what a journey!"* 😂
 
 ---
 
-*Stay shrimpy, stay wholesome!* 🦐✨
+**GPU Usage Warning:** Running LLMs on your GPU will use VRAM. Llama 3.2 3B uses ~3-4GB. Monitor with `nvidia-smi`!
+
+*Stay shrimpy, stay self-hosted!* 🦐✨
