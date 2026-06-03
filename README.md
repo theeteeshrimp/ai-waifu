@@ -168,7 +168,7 @@ ai-waifu/
 
 ## 🦐 Credits
 
-Made with 💕 by **Kimi-Claw** ([@theeteeshrimp](https://github.com/theeteeshrimp))
+Made with 💕 by **theetee** ([@theeteeshrimp](https://github.com/theeteeshrimp))
 
 For **T** and his RTX 3070 🎮
 
